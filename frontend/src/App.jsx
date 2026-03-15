@@ -225,7 +225,7 @@ function Hero() {
   
     return () => clearInterval(id);
   
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [ri, erasing]);
 
   return (
@@ -334,7 +334,7 @@ function Skills() {
     <section id="skills" style={{ padding: "120px 2rem", position: "relative" }}>
       <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "35%", background: "radial-gradient(circle at right,rgba(189,0,255,0.04),transparent)", pointerEvents: "none" }} />
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <SectionHeader idx="// 02" title="SKILLS.EXE" sub="Technical proficiency matrix" />
+        <SectionHeader idx={"// 02"} title="SKILLS.EXE" sub="Technical proficiency matrix" />
         <Reveal>
           <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2.5rem", flexWrap: "wrap" }}>
             {tabs.map((tb, i) => (
@@ -363,7 +363,7 @@ function Skills() {
           </div>
           <Reveal delay={0.2}>
             <CyberCard accent={t.color}>
-              <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: t.color, letterSpacing: "0.15em", marginBottom: "1.25rem", opacity: 0.8 }}>// FULL_TECH_STACK</div>
+              <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: t.color, letterSpacing: "0.15em", marginBottom: "1.25rem", opacity: 0.8 }}>FULL_TECH_STACK</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.55rem" }}>
                 {allTags.map(tag => (
                   <span key={tag}
@@ -579,7 +579,9 @@ function Contact() {
             <form onSubmit={submit}>
               <div style={{ background: "rgba(10,14,20,0.9)", border: "1px solid rgba(0,255,157,0.12)", borderRadius: 2, padding: "2.5rem", position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 20, right: 20, height: 1, background: "linear-gradient(90deg,transparent,#00ff9d88,transparent)" }} />
-                <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.68rem", color: "#00ff9d", letterSpacing: "0.14em", marginBottom: "2rem", opacity: 0.7 }}>// SEND_MESSAGE.POST</div>
+                <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.68rem", color: "#00ff9d", letterSpacing: "0.14em", marginBottom: "2rem", opacity: 0.7 }}>
+  {"// SEND_MESSAGE.POST"}
+</div>
                 {[{ key: "name", label: "YOUR_NAME", ph: "Seshadri Naidu" }, { key: "email", label: "EMAIL_ADDR", ph: "you@domain.com", type: "email" }].map(f => (
                   <div key={f.key} style={{ marginBottom: "1.2rem" }}>
                     <label style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: "#2a6040", letterSpacing: "0.1em", display: "block", marginBottom: 6 }}>{f.label} <span style={{ color: "#ff3c3c" }}>*</span></label>
