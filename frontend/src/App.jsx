@@ -191,11 +191,17 @@ function Nav() {
     </nav>
   );
 }
-
+const roles = [
+  "Full-Stack Developer",
+  "ML Engineer",
+  "DL Enthusiast",
+  "Cyber Researcher",
+  "MERN Stack Dev",
+  "AI Integrations Dev"
+];
 /* HERO */
 function Hero() {
   const [typed, setTyped] = useState("");
-  const roles = ["Full-Stack Developer","ML Engineer","DL Enthusiast","Cyber Researcher","MERN Stack Dev","AI Integrations Dev"];
   const [ri, setRi] = useState(0);
   const [erasing, setErasing] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
