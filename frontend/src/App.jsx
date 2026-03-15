@@ -198,35 +198,34 @@ function Hero() {
   const roles = ["Full-Stack Developer","ML Engineer","DL Enthusiast","Cyber Researcher","MERN Stack Dev","AI Integrations Dev"];
   const [ri, setRi] = useState(0);
   const [erasing, setErasing] = useState(false);
-  useEffect(() => {
-    const cur = roles[ri];
-    let i = erasing ? cur.length : 0;
-  
-    const id = setInterval(() => {
-      if (!erasing) {
-        i++;
-        setTyped(cur.slice(0, i));
-  
-        if (i >= cur.length) {
-          clearInterval(id);
-          setTimeout(() => setErasing(true), 1600);
-        }
-      } else {
-        i--;
-        setTyped(cur.slice(0, i));
-  
-        if (i <= 0) {
-          clearInterval(id);
-          setErasing(false);
-          setRi((r) => (r + 1) % roles.length);
-        }
-      }
-    }, erasing ? 38 : 72);
-  
-    return () => clearInterval(id);
-  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+  const cur = roles[ri];
+  let i = erasing ? cur.length : 0;
 
-  }, [ri, erasing]);
+  const id = setInterval(() => {
+    if (!erasing) {
+      i++;
+      setTyped(cur.slice(0, i));
+
+      if (i >= cur.length) {
+        clearInterval(id);
+        setTimeout(() => setErasing(true), 1600);
+      }
+    } else {
+      i--;
+      setTyped(cur.slice(0, i));
+
+      if (i <= 0) {
+        clearInterval(id);
+        setErasing(false);
+        setRi((r) => (r + 1) % roles.length);
+      }
+    }
+  }, erasing ? 38 : 72);
+
+  return () => clearInterval(id);
+}, [ri, erasing]);
 
   return (
     <section id="about" style={{ minHeight: "100vh", position: "relative", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 64 }}>
