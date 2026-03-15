@@ -22,11 +22,24 @@ const GlobalStyles = () => (
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setInView(true);
+      },
+      { threshold }
+    );
+
+    const current = ref.current;
+    if (current) obs.observe(current);
+
+    return () => {
+      if (current) obs.unobserve(current);
+      obs.disconnect();
+    };
+  }, [threshold]);
+
   return [ref, inView];
 }
 
@@ -188,11 +201,31 @@ function Hero() {
   useEffect(() => {
     const cur = roles[ri];
     let i = erasing ? cur.length : 0;
+  
     const id = setInterval(() => {
-      if (!erasing) { i++; setTyped(cur.slice(0, i)); if (i >= cur.length) { clearInterval(id); setTimeout(() => setErasing(true), 1600); } }
-      else { i--; setTyped(cur.slice(0, i)); if (i <= 0) { clearInterval(id); setErasing(false); setRi(r => (r + 1) % roles.length); } }
+      if (!erasing) {
+        i++;
+        setTyped(cur.slice(0, i));
+  
+        if (i >= cur.length) {
+          clearInterval(id);
+          setTimeout(() => setErasing(true), 1600);
+        }
+      } else {
+        i--;
+        setTyped(cur.slice(0, i));
+  
+        if (i <= 0) {
+          clearInterval(id);
+          setErasing(false);
+          setRi((r) => (r + 1) % roles.length);
+        }
+      }
     }, erasing ? 38 : 72);
+  
     return () => clearInterval(id);
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ri, erasing]);
 
   return (
