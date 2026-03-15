@@ -225,8 +225,8 @@ useEffect(() => {
   }, erasing ? 38 : 72);
 
   return () => clearInterval(id);
-}, [ri, erasing]);
 
+}, [ri, erasing]);
   return (
     <section id="about" style={{ minHeight: "100vh", position: "relative", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 64 }}>
       <NeuralBg />
