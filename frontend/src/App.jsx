@@ -265,7 +265,7 @@ useEffect(() => {
         <div style={{ opacity: 0, animation: "fadeUp 0.8s ease 0.55s forwards", marginTop: "1.75rem", maxWidth: 560, borderLeft: "3px solid #00ff9d", paddingLeft: "1.25rem", background: "rgba(0,0,0,0.35)" }}>
           <p style={{ fontFamily: "'Space Grotesk'", fontSize: "0.92rem", color: "#7a9e90", lineHeight: 1.85, padding: "1rem 0 1rem 0.25rem" }}>
             IT undergraduate at <span style={{ color: "#00ff9d", fontWeight: 600 }}>CBIT</span> with{" "}
-            <span style={{ fontFamily: "'JetBrains Mono'", color: "#00d4ff" }}>9.29 CGPA</span>. 
+            <span style={{ fontFamily: "'JetBrains Mono'", color: "#00d4ff" }}>9.22 CGPA</span>. 
             Building production-grade apps, architecting ML/DL pipelines, and researching cyber resilience systems.
           </p>
         </div>
@@ -293,7 +293,7 @@ useEffect(() => {
         </div>
 
         <div style={{ opacity: 0, animation: "fadeUp 0.8s ease 0.85s forwards", marginTop: "4rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", maxWidth: 520, background: "rgba(0,255,157,0.06)", border: "1px solid rgba(0,255,157,0.12)", gap: "1px" }}>
-          {[["9.29","CGPA"],["5+","PROJECTS"],["300+","LEETCODE"],["3","CERTS"]].map(([v, l]) => (
+          {[["9.22","CGPA"],["5+","PROJECTS"],["300+","LEETCODE"],["3","CERTS"]].map(([v, l]) => (
             <div key={l} style={{ background: "#0a0a0f", padding: "1.2rem 0.75rem", textAlign: "center" }}>
               <div style={{ fontFamily: "'Orbitron'", fontSize: "1.45rem", fontWeight: 700, color: "#00ff9d" }}>{v}</div>
               <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a6040", marginTop: 4, letterSpacing: "0.08em" }}>{l}</div>
@@ -444,7 +444,7 @@ function Experience() {
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 1, background: "linear-gradient(#00ff9d44,#00d4ff44,rgba(189,0,255,0.3),transparent)" }} />
           {[
             { type: "INTERNSHIP", color: "#00ff9d", period: "Feb 2026 — Present", title: "Web Development with AI Integration", org: "Vicharanashala Lab, IIT Ropar (NPTEL)", sub: "Mentor: Prof. Sudarshan Iyengar", content: { grid: true, items: ["Selected from NPTEL courses by IIT Ropar","Open-source web dev + AI integration","Hackathon-style development with cohort","MERN, REST APIs, AI-assisted workflows"] } },
-            { type: "EDUCATION", color: "#00d4ff", period: "2023 — May 2027", title: "B.E. Information Technology", org: "Chaitanya Bharathi Institute of Technology", sub: "CGPA: 9.29 / 10.0", content: { tags: true, items: ["DSA","OOP","DBMS","OS","Computer Networks","Machine Learning","Deep Learning","Big Data Analytics"] } },
+            { type: "EDUCATION", color: "#00d4ff", period: "2023 — May 2027", title: "B.E. Information Technology", org: "Chaitanya Bharathi Institute of Technology", sub: "CGPA: 9.22 / 10.0", content: { tags: true, items: ["DSA","OOP","DBMS","OS","Computer Networks","Machine Learning","Deep Learning","Big Data Analytics"] } },
           ].map((item, i) => (
             <Reveal key={item.type} delay={i * 0.15}>
               <div style={{ position: "relative", marginBottom: "2.5rem" }}>
