@@ -395,6 +395,18 @@ function Projects() {
     { code: "PRJ_003", title: "CDC Placements Portal", tag: "AI-POWERED", accent: "#bd00ff", stack: ["MERN","AI APIs","Email Auto","Data Viz"], desc: "AI-powered campus placement management with resume generation and recruitment dashboards.", bullets: ["AI-powered resume generation","Job filtering & management","Automated email notifications","Data visualization dashboards"], github: "https://github.com/Seshmanuvarthi/Placement_Portal" },
     { code: "PRJ_004", title: "Cyber Resilience Validation", tag: "SECURITY", accent: "#ff3c3c", stack: ["Python","SQLite","Paramiko","AWS EC2"], desc: "SSH honeypot logging real attacker sessions with AI classification and a chaos stress-testing engine.", bullets: ["SSH honeypot — 5-table SQLite logging","AI: Recon, Privesc, Lateral, Persistence","Chaos Engine stress-tests on threat","Mirrors real SOC response workflows"], github: "https://github.com/Seshmanuvarthi" },
     { code: "PRJ_005", title: "Civic Issue Reporting App", tag: "MOBILE + DL", accent: "#ffd700", stack: ["Flutter","Deep Learning","GPS","ImageNet"], desc: "Flutter mobile app with AI image classification and GPS routing to auto-report civic issues.", bullets: ["ImageNet transfer learning classifier","Detects garbage, road damage, streetlights","GPS auto-routes to nearest municipal dept","Real-time issue tracking"], github: "https://github.com/SudheeHacakthon/CivicVision/tree/integration-demo" },
+    { 
+      code: "PRJ_006", 
+      title: "PDF Translator — English to Telugu", 
+      tag: "AI + NLP", 
+      accent: "#ff9d00", 
+      stack: ["Flask", "PyMuPDF", "NLLB-200", "HarfBuzz", "SSE"], 
+      desc: "Privacy-first offline PDF translator that converts English documents to Telugu while preserving original layout and formatting.", 
+      bullets: [
+        "Fully offline AI translation via Meta's NLLB-200 model","Real-time progress streaming via Server-Sent Events (SSE)","Background threading — UI never freezes during translation","HarfBuzz complex shaping for accurate Telugu script rendering","Smart background sampling for clean English text redaction","Apple Silicon MPS acceleration — inference in seconds"
+      ], 
+      github: "https://github.com/Seshmanuvarthi/english-to-telugu-pdf-translator" 
+    },
   ];
   return (
     <section id="projects" style={{ padding: "120px 2rem", position: "relative" }}>
@@ -484,6 +496,44 @@ function Experience() {
 
 /* ACHIEVEMENTS */
 function Achievements() {
+  const certifications = [
+    { 
+      icon: "☁", 
+      name: "Microsoft Azure Fundamentals", 
+      org: "Microsoft", 
+      color: "#00d4ff", 
+      link: "https://drive.google.com/file/d/1Uj9T80eRGSfT8G-HdICgMUi--92Ffz_9/view?usp=share_link" 
+    },
+    { 
+      icon: "🤖", 
+      name: "Salesforce AI Associate", 
+      org: "Salesforce", 
+      color: "#00a6e0", 
+      link: "https://drive.google.com/file/d/12eKyzIrdg2E9JL7Ei6M3PfhkW0PfKh1l/view?usp=sharing" 
+    },
+    { 
+      icon: "⚡", 
+      name: "Agentforce Specialist", 
+      org: "Salesforce", 
+      color: "#bd00ff", 
+      link: "https://drive.google.com/file/d/1ig8ZAgni9Ml1-eQw-yYwkyeQZiyzHk-t/view?usp=share_link" 
+    },
+    { 
+      icon: "🐍", 
+      name: "Joy of Computing with Python", 
+      org: "NPTEL / IIT Madras", 
+      color: "#00ff9d", 
+      link: "https://drive.google.com/file/d/1ig8ZAgni9Ml1-eQw-yYwkyeQZiyzHk-t/view?usp=share_link" 
+    },
+    { 
+      icon: "💡", 
+      name: "LeetCode 300+ Solved", 
+      org: "LeetCode", 
+      color: "#ffd700", 
+      link: "https://leetcode.com/u/SESH_MANUVARTHI/" 
+    }
+  ];
+
   return (
     <section id="achievements" style={{ padding: "120px 2rem" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -491,27 +541,24 @@ function Achievements() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem" }}>
           <div>
             <Reveal><div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: "#2a6040", letterSpacing: "0.15em", marginBottom: "1.5rem" }}># CERTIFICATIONS + PROFILES</div></Reveal>
-            {[
-              { icon: "☁", name: "Azure Fundamentals", org: "Microsoft", color: "#00d4ff" },
-              { icon: "🤖", name: "Salesforce AI Associate", org: "Salesforce", color: "#00a6e0" },
-              { icon: "⚡", name: "AgentForce Specialist", org: "Salesforce", color: "#bd00ff" },
-              { icon: "💡", name: "LeetCode 300+ Solved", org: "LeetCode", color: "#ffd700" },
-              { icon: "🐍", name: "HackerRank 5★ Python", org: "HackerRank", color: "#00ff9d" },
-            ].map((c, i) => (
+            {certifications.map((c, i) => (
               <Reveal key={c.name} delay={i * 0.07}>
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.8rem", background: "rgba(10,14,20,0.8)", border: `1px solid ${c.color}18`, padding: "1rem 1.25rem", borderRadius: 2, transition: "all 0.3s", cursor: "default" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}44`; e.currentTarget.style.background = `${c.color}07`; e.currentTarget.style.transform = "translateX(5px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.color}18`; e.currentTarget.style.background = "rgba(10,14,20,0.8)"; e.currentTarget.style.transform = "translateX(0)"; }}>
-                  <div style={{ width: 36, height: 36, background: `${c.color}15`, border: `1px solid ${c.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.05rem", borderRadius: 2, flexShrink: 0 }}>{c.icon}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk'", fontSize: "0.83rem", fontWeight: 600, color: "#b8cec5" }}>{c.name}</div>
-                    <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.65rem", color: "#2a6040", marginTop: 2 }}>{c.org}</div>
+                <a href={c.link} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", marginBottom: "0.8rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "1rem", background: "rgba(10,14,20,0.8)", border: `1px solid ${c.color}18`, padding: "1rem 1.25rem", borderRadius: 2, transition: "all 0.3s", cursor: "pointer" }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}44`; e.currentTarget.style.background = `${c.color}07`; e.currentTarget.style.transform = "translateX(5px)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.color}18`; e.currentTarget.style.background = "rgba(10,14,20,0.8)"; e.currentTarget.style.transform = "translateX(0)"; }}>
+                    <div style={{ width: 36, height: 36, background: `${c.color}15`, border: `1px solid ${c.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.05rem", borderRadius: 2, flexShrink: 0 }}>{c.icon}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontFamily: "'Space Grotesk'", fontSize: "0.83rem", fontWeight: 600, color: "#b8cec5" }}>{c.name}</div>
+                      <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.65rem", color: "#2a6040", marginTop: 2 }}>{c.org}</div>
+                    </div>
+                    <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.55rem", color: c.color, border: `1px solid ${c.color}44`, padding: "2px 6px", borderRadius: 1 }}>VIEW ↗</div>
                   </div>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: c.color, boxShadow: `0 0 8px ${c.color}` }} />
-                </div>
+                </a>
               </Reveal>
             ))}
           </div>
+          
           <div>
             <Reveal><div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: "#2a6040", letterSpacing: "0.15em", marginBottom: "1.5rem" }}># ACHIEVEMENTS</div></Reveal>
             {[
@@ -538,7 +585,6 @@ function Achievements() {
     </section>
   );
 }
-
 /* CONTACT */
 function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
