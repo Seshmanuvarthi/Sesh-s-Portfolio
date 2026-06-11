@@ -1,0 +1,11 @@
+# Resume drafts and cover letters (not for version control)
+*.pdf
+!frontend/public/resume.pdf
+resume.tex
+resume_all.tex
+cover_letter_gs.tex
+1601237371*.tex
+fixes.md
+
+# OS
+.DS_Store
