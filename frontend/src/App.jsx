@@ -384,6 +384,7 @@ function InteractiveTerminal() {
     } else {
       out = [`bash: ${t}: command not found. Type 'help'.`];
     }
+    if (out === null && lower === "clear") { setHistory([]); setInput(""); return; }
     if (out) next.push(...out.map(text => ({ type: "out", text })));
     setHistory(next); setInput("");
   };
