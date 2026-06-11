@@ -1,0 +1,144 @@
+\documentclass[a4paper,10.5pt]{article}
+\usepackage{url}
+\usepackage{parskip}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[top=0.85cm, bottom=0.85cm, left=1.2cm, right=1.2cm]{geometry}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\usepackage{titlesec}
+\titleformat{\section}{\large\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{4pt}{3pt}
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+\usepackage{fontawesome5}
+\setlength{\parskip}{1pt}
+\begin{document}
+\pagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+\begin{tabularx}{\linewidth}{@{} C @{}}
+{\Huge \textbf{Manuvarthi Seshadri Naidu}} \\[5pt]
+\href{https://github.com/Seshmanuvarthi}{\raisebox{-0.05\height}\faGithub\ Seshmanuvarthi} \ $|$ \
+\href{https://www.linkedin.com/in/seshadri-naidu-manuvarthi-366466295/}{\raisebox{-0.05\height}\faLinkedin\ seshadri-naidu-manuvarthi} \ $|$ \
+\href{mailto:seshmanuvarthi27@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ seshmanuvarthi27@gmail.com} \ $|$ \
+\href{tel:+918897055099}{\raisebox{-0.05\height}\faMobile\ +91 8897055099} \\
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%	PROFESSIONAL SUMMARY
+%----------------------------------------------------------------------------------------
+\section{Professional Summary}
+\vspace{1pt}
+IT undergraduate (9.22 CGPA) at CBIT with hands-on experience in full-stack development, Machine Learning, and Deep Learning, backed by a strong foundation in Data Structures and Algorithms. Proficient in the MERN stack with a track record of building and deploying production-grade applications.
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+\section{Education}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{@{}l r@{}}
+\textbf{B.E. in Information Technology} --- Chaitanya Bharathi Institute of Technology & \hfill 2023 -- May 2027 \\[2pt]
+\multicolumn{2}{@{}X@{}}{CGPA: \textbf{9.22} \hfill} \\[4pt]
+\textbf{Intermediate (MPC)} --- Sasi New Gen Jr College, Velivennu, West Godavari, AP & \hfill 2021 -- 2023 \\[2pt]
+\multicolumn{2}{@{}X@{}}{Percentage: \textbf{98.3\%} \hfill} \\[4pt]
+\textbf{SSC} --- St. Ann's EM High School, Tadepalligudem, West Godavari, AP & \hfill 2021 \\[2pt]
+\multicolumn{2}{@{}X@{}}{Percentage: \textbf{94.6\%} \hfill} \\
+\end{tabularx}
+%----------------------------------------------------------------------------------------
+%	PROJECTS
+%----------------------------------------------------------------------------------------
+\section{Projects}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{@{}l r@{}}
+\textbf{AI PDF Translator} & \hfill \href{https://github.com/Seshmanuvarthi/english-to-telugu-pdf-translator}{GitHub} \\[-1pt]
+\multicolumn{2}{@{}l@{}}{\textit{Flask, PyMuPDF, Meta NLLB-200, HarfBuzz, Server-Sent Events}} \\[2pt]
+\multicolumn{2}{@{}X@{}}{%
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[nosep, leftmargin=1em, itemsep=2pt]
+    \item[--] Architected a fully offline, privacy-first Flask app for English-to-Telugu PDF translation using SSE for real-time progress streaming without UI blocking.
+    \item[--] Optimized Meta's NLLB-200 pipeline with vectorized batching and Apple Silicon (MPS) acceleration, cutting inference time from minutes to seconds; rendered Telugu scripts accurately via HarfBuzz.
+\end{itemize}
+\end{minipage}}
+\end{tabularx}
+\vspace{3pt}
+
+\begin{tabularx}{\linewidth}{@{}l r@{}}
+\textbf{Adaptive Deception-Driven Cyber Resilience Validation System} & \hfill \href{https://github.com/Seshmanuvarthi}{GitHub} \\[-1pt]
+\multicolumn{2}{@{}l@{}}{\textit{Python, SQLite, Paramiko, AWS EC2}} \\[2pt]
+\multicolumn{2}{@{}X@{}}{%
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[nosep, leftmargin=1em, itemsep=2pt]
+    \item[--] Built an SSH honeypot logging 100+ real attack patterns into a 5-table SQLite schema; layered an AI classifier achieving 90\%+ accuracy across 4 intent categories (Reconnaissance, Privilege Escalation, Lateral Movement, Persistence).
+    \item[--] Designed a Chaos Engine that escalates stress-testing on repeated attacks, mirroring SOC workflows and reducing mean threat detection time by 30\%.
+\end{itemize}
+\end{minipage}}
+\end{tabularx}
+\vspace{3pt}
+
+
+\begin{tabularx}{\linewidth}{@{}l r@{}}
+\textbf{CDC Placements Portal} & \hfill \href{https://github.com/Seshmanuvarthi/Placement_Portal}{GitHub} \\[-1pt]
+\multicolumn{2}{@{}l@{}}{\textit{MERN Stack, REST APIs, AI Resume Generation}} \\[2pt]
+\multicolumn{2}{@{}X@{}}{%
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[nosep, leftmargin=1em, itemsep=2pt]
+    \item[--] Built a placement portal for 500+ students with automated eligibility filtering (CGPA, branch, backlogs) and AI-powered resume generation, cutting coordinator shortlisting effort by 35\%.
+    \item[--] Designed REST APIs for student data, job listings, and resume analysis with sub-500ms response times; integrated automated email notifications for 3$\times$ faster recruiter workflows.
+\end{itemize}
+\end{minipage}}
+\end{tabularx}
+
+
+
+%----------------------------------------------------------------------------------------
+%	TECHNICAL SKILLS
+%----------------------------------------------------------------------------------------
+\section{Technical Skills}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\textbf{Languages}   & Python, Java, SQL, JavaScript \\[2pt]
+\textbf{Web Dev}     & MERN Stack (MongoDB, Express.js, React.js, Node.js), HTML, CSS \\[2pt]
+\textbf{Databases}   & MongoDB, SQLite \\[2pt]
+\textbf{Cloud/Tools} & Render, AWS EC2, Cloudinary, Git, Postman, VS Code, RESTful APIs \\[2pt]
+\textbf{CS Fundamentals} & Data Structures \& Algorithms, Object-Oriented Programming, Operating Systems, Computer Networks, DBMS \\[2pt]
+\textbf{AI/ML}       & Machine Learning, Deep Learning, Big Data Analytics \\
+\end{tabularx}
+%----------------------------------------------------------------------------------------
+%	ACTIVITIES
+%----------------------------------------------------------------------------------------
+\section{Leadership and Extracurriculars}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{@{}l r@{}}
+\textbf{Event Head} --- Cache If You Can, Sudhee 2026 $|$ \textit{Dept of Information Technology, CBIT} & \hfill 2026 \\[4pt]
+\href{https://drive.google.com/file/d/1yupQx853bTCgPQpJUgdcno5PdC6kmpVC/view?usp=share_link}{\textbf{Event Volunteer}} --- Capture the Flag, Sudhee 2025 $|$ \textit{CCC Club, CBIT} & \hfill 2025 \\
+\end{tabularx}
+%----------------------------------------------------------------------------------------
+%	HONORS & ACHIEVEMENTS
+%----------------------------------------------------------------------------------------
+\section{Achievements}
+\vspace{1pt}
+\begin{itemize}[nosep, leftmargin=1.5em, itemsep=2pt]
+  \item[--] \textbf{Smart India Hackathon (SIH) 2025} --- National finalist representing CBIT among thousands of teams tackling live government problem statements.
+  \item[--] \textbf{Sudhee Hackathon, Feb 2026} --- Podium finish at CBIT's institutional hackathon; delivered a working Flutter + Deep Learning prototype under time-constrained conditions.
+  \item[--] \href{https://leetcode.com/u/SESH_MANUVARTHI/}{LeetCode 300+ problems solved} \ $|$ \ \href{https://www.hackerrank.com/profile/seshmanuvarthi27}{HackerRank 5$\bigstar$ Python}
+\end{itemize}
+
+
+%----------------------------------------------------------------------------------------
+%	CERTIFICATIONS
+%----------------------------------------------------------------------------------------
+\section{Certifications}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\textbf{Microsoft}      & \href{https://drive.google.com/file/d/1Uj9T80eRGSfT8G-HdICgMUi--92Ffz_9/view?usp=share_link}{Azure Fundamentals (AZ-900)} \\[2pt]
+\textbf{Salesforce}     & \href{https://drive.google.com/file/d/1ig8ZAgni9Ml1-eQw-yYwkyeQZiyzHk-t/view?usp=share_link}{AgentForce Specialist} \ $|$ \ \href{https://drive.google.com/file/d/12eKyzIrdg2E9JL7Ei6M3PfhkW0PfKh1l/view?usp=sharing}{AI Associate} \\[2pt]
+\textbf{NPTEL}          & \href{https://drive.google.com/file/d/1xy7yMiITQlHQ5rMfqnr1E25GgKLNywxe/view?usp=share_link}{Joy of Computing with Python} --- \textbf{Elite + Gold} $|$ Score: 94\% $|$ \textit{Top 2\% nationwide} \\[2pt]
+\textbf{Vault of Codes} & \href{https://drive.google.com/file/d/1ZCG5hGw_KajViTB6CHOn3X3Br9BgI-SM/view?usp=share_link}{AI \& Prompt Engineering} \\
+\end{tabularx}
+\end{document}

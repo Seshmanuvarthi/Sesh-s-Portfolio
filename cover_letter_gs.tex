@@ -1,0 +1,70 @@
+%----------------------------------------------------------------------------------------
+%	COVER LETTER --- Goldman Sachs Summer Analyst (Engineering, 2027 batch)
+%	Companion to resume.tex
+%----------------------------------------------------------------------------------------
+\documentclass[a4paper,11pt]{article}
+\usepackage{url}
+\usepackage{parskip}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage{tabularx}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+\usepackage{fontawesome5}
+\setlength{\parskip}{6pt}
+
+\begin{document}
+\pagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+%	HEADER
+%----------------------------------------------------------------------------------------
+\begin{tabularx}{\linewidth}{@{} C @{}}
+{\Large \textbf{Manuvarthi Seshadri Naidu}} \\[4pt]
+\href{https://sesh-s-portfolio.vercel.app}{\raisebox{-0.05\height}\faGlobe\ sesh-s-portfolio.vercel.app} \ $|$ \
+\href{https://github.com/Seshmanuvarthi}{\raisebox{-0.05\height}\faGithub\ Seshmanuvarthi} \ $|$ \
+\href{https://www.linkedin.com/in/seshadri-naidu-manuvarthi-366466295/}{\raisebox{-0.05\height}\faLinkedin\ seshadri-naidu-manuvarthi} \ $|$ \
+\href{mailto:seshmanuvarthi27@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ seshmanuvarthi27@gmail.com} \ $|$ \
+\href{tel:+918897055099}{\raisebox{-0.05\height}\faMobile\ +91 8897055099} \\
+\end{tabularx}
+
+\vspace{14pt}
+
+\noindent May 21, 2026
+
+\vspace{4pt}
+
+\noindent Hiring Team \\
+Goldman Sachs --- Engineering Division \\
+Bengaluru / Hyderabad, India
+
+\vspace{6pt}
+
+\noindent \textbf{Re: Summer Analyst, Engineering (2027 batch, Bengaluru / Hyderabad)}
+
+\vspace{8pt}
+
+Dear Hiring Team,
+
+I'm applying for the 2027 Summer Analyst program in Goldman Sachs Engineering. One line from your description stuck with me --- \textit{``Our Engineers don't just make things, we make things possible.''} That framing matches how I've come to think about my own work: the interesting part isn't the demo, it's the engineering decisions that decide whether a system holds up when something goes wrong.
+
+The clearest example is the SSH honeypot I built last semester. It captures live attacker sessions into a normalised SQLite schema and routes unknown commands to an LLM-powered classifier (Groq API, Llama-3.3-70B-versatile). The interesting design work wasn't about the model --- it was about making the system trustworthy when the model could be wrong. I added structured-JSON output enforcement, a 3-tier parse-and-repair pipeline, and confidence-gated acceptance ($\geq$0.75) so the rule engine could fall back to the model only when it was confident, and otherwise return a deterministic ``unknown'' rather than a hallucinated label. A chaos-engine layer then escalates response intensity on repeated probes, mirroring real SOC escalation workflows. That project taught me what I think production AI actually is: mostly engineering --- governance, fallback, observability --- with the modelling sitting on top.
+
+Alongside it, I've deployed a hotel inventory \& procurement platform on the MERN stack --- multi-role (Admin, Manager, Staff, Vendor) with JWT auth, Cloudinary-backed uploads, and Brevo SMTP alerts that pull manual invoice turnaround from hours down to seconds --- and built a fully-offline PDF translation engine using Meta's NLLB-200 accelerated on Apple Silicon (MPS) that brought inference from minutes to seconds. Different domains, but the instinct is the same --- build systems that hold up end-to-end, not just happy-path demos.
+
+Goldman Sachs Engineering is where I'd most like to keep practising that instinct. The combination you describe --- massively scalable systems, low-latency infrastructure, ML alongside financial engineering, and proactive defence against cyber threats --- is exactly the surface area I want to grow on. I'm also drawn to the fact that the engineering org sits at the centre of the business rather than off to the side; the constraints are sharper there, and the feedback loops are real.
+
+I'm currently in my third year of B.E. Information Technology at CBIT Hyderabad (CGPA 9.22), and I'd be available for the 2027 summer internship between my pre-final and final years. My resume is attached, and I'd welcome the chance to talk further.
+
+Thank you for considering my application.
+
+\vspace{12pt}
+
+\noindent Sincerely, \\[10pt]
+\textbf{Manuvarthi Seshadri Naidu}
+
+\end{document}

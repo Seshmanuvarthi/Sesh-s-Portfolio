@@ -169,6 +169,297 @@ function TerminalLine({ text, delay = 0 }) {
   );
 }
 
+/* LIVE STATS HOOK */
+function useLiveStats() {
+  const [leetcode, setLeetcode] = useState(undefined);
+  const [repos, setRepos] = useState(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    const withTimeout = (p, ms) => Promise.race([
+      p,
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms)),
+    ]);
+
+    withTimeout(
+      fetch("https://leetcode-api-faisalshohag.vercel.app/SESH_MANUVARTHI").then(r => r.ok ? r.json() : Promise.reject()),
+      6000
+    )
+      .then(d => { if (!cancelled) setLeetcode(typeof d.totalSolved === "number" ? d.totalSolved : "300+"); })
+      .catch(() => { if (!cancelled) setLeetcode("300+"); });
+
+    withTimeout(
+      fetch("https://api.github.com/users/Seshmanuvarthi").then(r => r.ok ? r.json() : Promise.reject()),
+      6000
+    )
+      .then(d => { if (!cancelled) setRepos(typeof d.public_repos === "number" ? d.public_repos : "20+"); })
+      .catch(() => { if (!cancelled) setRepos("20+"); });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  return { leetcode, repos };
+}
+
+/* COUNT UP (animates int / decimal values; passes through strings) */
+function CountUp({ value }) {
+  const [display, setDisplay] = useState("...");
+  useEffect(() => {
+    if (value === undefined || value === null) { setDisplay("..."); return; }
+    const num = parseFloat(value);
+    if (Number.isNaN(num)) { setDisplay(value); return; }
+    const isInt = Number.isInteger(num);
+    let raf;
+    const duration = 1200;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur = eased * num;
+      setDisplay(isInt ? Math.floor(cur) : cur.toFixed(2));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setDisplay(isInt ? num : num.toFixed(2));
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+  return <>{display}</>;
+}
+
+/* INTERACTIVE TERMINAL — hero centerpiece */
+function InteractiveTerminal() {
+  const [bootDone, setBootDone] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [input, setInput] = useState("");
+  const [cmdLog, setCmdLog] = useState([]);
+  const [histIdx, setHistIdx] = useState(-1);
+  const inputRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setBootDone(true), 4400);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => { if (bootDone && inputRef.current) inputRef.current.focus(); }, [bootDone]);
+  useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight; }, [history]);
+
+  const projects = {
+    honeypot: [
+      "Adaptive Deception-Driven Cyber Resilience System",
+      "Stack: Python, Groq API (Llama-3.3-70B), Paramiko, SQLite, AWS EC2",
+      "- SSH honeypot logging real attacker sessions (5-table SQLite, 100+ patterns)",
+      "- LLM-fallback classifier, confidence-gated (>=0.75), structured JSON output",
+      "- Chaos Engine escalates response intensity on repeated attacks",
+      "github.com/RahulArra/honeypot-choas",
+    ],
+    pdf: [
+      "Transformer-Based English -> Telugu PDF Translator",
+      "Stack: Flask, Meta NLLB-200, PyMuPDF, HarfBuzz, Server-Sent Events",
+      "- Privacy-first, fully offline translation",
+      "- MPS-accelerated NLLB-200 (minutes -> seconds)",
+      "- HarfBuzz Telugu rendering + smart background sampling",
+      "github.com/Seshmanuvarthi/english-to-telugu-pdf-translator",
+    ],
+    hotel: [
+      "Hotel Inventory & Procurement Management System",
+      "Stack: MERN, JWT, Cloudinary, Brevo SMTP",
+      "- 4-role workflow (Admin / Manager / Staff / Vendor)",
+      "- JWT auth, Cloudinary uploads, automated SMTP alerts",
+      "Live: hotel-inventory-procurement-management-sr7u.onrender.com",
+    ],
+    exam: [
+      "Virtual Exam Bridge",
+      "Stack: MERN, RBAC, Session Management",
+      "- Role-based access (student / teacher portals)",
+      "- Configurable question bank with 3-level difficulty",
+      "Live: virtualexam-bridge-frontend.onrender.com",
+    ],
+    civic: [
+      "Civic Issue Reporting Mobile App",
+      "Stack: Flutter, Deep Learning, GPS",
+      "- ImageNet transfer learning classifier (88%+ validation accuracy)",
+      "- GPS auto-routes reports to nearest municipal department",
+      "github.com/SudheeHacakthon/CivicVision",
+    ],
+    cti: [
+      "Cyber Threat Intelligence Pipeline",
+      "Stack: Kafka, Spark Structured Streaming, Flink CEP, GraphX, FastAPI, React, Leaflet",
+      "- Kafka ingestion -> parallel Spark + Flink CEP consumers",
+      "- Spark: rule-based threat classification on every event",
+      "- Flink CEP: multi-event attack-pattern detection",
+      "- GraphX PageRank surfaces high-centrality threat actors",
+      "- FastAPI WebSocket -> React + Leaflet UI, animated geo-arcs every 2s",
+      "github.com/Seshmanuvarthi/cyber-threat-intelligence",
+    ],
+    tcc: [
+      "TCC Club — Members' Website",
+      "Stack: Next.js 16, TypeScript, Tailwind 4, bcrypt",
+      "- Public: menu, facilities, gallery, newsletter, payments, bookings",
+      "- Admin auth: bcrypt-hashed creds + HttpOnly signed session cookies",
+      "- On-demand menu / newsletter uploads with social-share hooks",
+      "Live: tccclub.net",
+    ],
+  };
+
+  const commands = {
+    help: () => [
+      "Available commands:",
+      "  whoami           - about me",
+      "  skills           - tech stack",
+      "  projects         - list my projects",
+      "  cat <project>    - details (e.g., cat honeypot)",
+      "  socials          - github / linkedin / leetcode / hackerrank",
+      "  resume           - open resume",
+      "  contact          - email & phone",
+      "  clear            - clear the terminal",
+      "  sudo hire-me     - ;)",
+    ],
+    whoami: () => [
+      "Manuvarthi Seshadri Naidu",
+      "B.E. Information Technology @ CBIT  |  CGPA: 9.22",
+      "Building production-grade software, ML pipelines, and cyber resilience systems.",
+    ],
+    skills: () => [
+      "Languages:    Python, Java, SQL, JavaScript",
+      "AI / ML:      LLM Integration (Groq, Llama-3.3-70B), NLLB-200, Transfer Learning, MPS",
+      "Web/Backend:  MERN, REST APIs, SSE, JWT",
+      "Databases:    MongoDB, SQLite",
+      "Cloud/Tools:  AWS EC2, Render, Cloudinary, Git, Postman",
+    ],
+    projects: () => [
+      "  cti       - Cyber Threat Intelligence Pipeline (Kafka + Spark + Flink + GraphX)",
+      "  honeypot  - Adaptive Deception-Driven Cyber Resilience System",
+      "  pdf       - Transformer-Based English -> Telugu PDF Translator",
+      "  tcc       - TCC Club Members' Website (Next.js, live client work)",
+      "  hotel     - Hotel Inventory & Procurement Management System",
+      "  exam      - Virtual Exam Bridge",
+      "  civic     - Civic Issue Reporting Mobile App",
+      "Type 'cat <name>' for details (e.g., cat cti).",
+    ],
+    socials: () => [
+      "GitHub:     github.com/Seshmanuvarthi",
+      "LinkedIn:   linkedin.com/in/seshadri-naidu-manuvarthi-366466295",
+      "LeetCode:   leetcode.com/u/SESH_MANUVARTHI",
+      "HackerRank: hackerrank.com/profile/seshmanuvarthi27",
+    ],
+    contact: () => [
+      "Email: seshmanuvarthi27@gmail.com",
+      "Phone: +91 8897055099",
+      "Or scroll to the CONTACT.SSH section below.",
+    ],
+    resume: () => {
+      window.open("/resume.pdf", "_blank");
+      return ["Opening resume.pdf in new tab..."];
+    },
+    clear: () => { setHistory([]); return null; },
+    "sudo hire-me": () => {
+      setTimeout(() => { window.location.href = "mailto:seshmanuvarthi27@gmail.com?subject=Let%27s%20talk&body=Hi%20Sesh%2C"; }, 700);
+      return [
+        "[sudo] password for sesh: ****************",
+        "Access granted. Initiating outreach...",
+        ">> Launching email client. Talk soon."
+      ];
+    },
+  };
+
+  const run = (raw) => {
+    const t = raw.trim();
+    if (!t) return;
+    const next = [...history, { type: "in", text: t }];
+    setCmdLog(l => [...l, t]); setHistIdx(-1);
+    const lower = t.toLowerCase();
+    let out;
+    if (commands[lower]) {
+      out = commands[lower]();
+    } else if (lower.startsWith("cat ")) {
+      const arg = lower.slice(4).trim();
+      out = projects[arg] || [`cat: ${arg}: No such project. Run 'projects' to see the list.`];
+    } else if (lower === "ls" || lower.startsWith("ls ")) {
+      out = commands.projects();
+    } else if (lower === "pwd") {
+      out = ["/home/sesh/portfolio"];
+    } else if (lower === "exit" || lower === "quit") {
+      out = ["Nice try. You can't exit a portfolio."];
+    } else {
+      out = [`bash: ${t}: command not found. Type 'help'.`];
+    }
+    if (out) next.push(...out.map(text => ({ type: "out", text })));
+    setHistory(next); setInput("");
+  };
+
+  const onKey = (e) => {
+    if (e.key === "Enter") { run(input); }
+    else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (cmdLog.length === 0) return;
+      const i = histIdx === -1 ? cmdLog.length - 1 : Math.max(0, histIdx - 1);
+      setHistIdx(i); setInput(cmdLog[i]);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (histIdx === -1) return;
+      const i = histIdx + 1;
+      if (i >= cmdLog.length) { setHistIdx(-1); setInput(""); }
+      else { setHistIdx(i); setInput(cmdLog[i]); }
+    }
+  };
+
+  return (
+    <div onClick={() => inputRef.current?.focus()}
+      style={{ opacity: 0, animation: "fadeUp 0.8s ease 1s forwards", marginTop: "2.5rem", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(0,255,157,0.1)", padding: "1.25rem 1.5rem", maxWidth: 560, borderRadius: 2, cursor: "text" }}>
+      <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.9rem", alignItems: "center" }}>
+        {["#ff5f56","#ffbd2e","#27c93f"].map(c => <span key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
+        <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.6rem", color: "#3a6a50", marginLeft: 8 }}>seshadri@cbit:~</span>
+        <div style={{
+          marginLeft: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: 7,
+          background: "rgba(0,255,157,0.14)",
+          border: "1px solid rgba(0,255,157,0.55)",
+          padding: "4px 12px",
+          borderRadius: 999,
+          boxShadow: "0 0 14px rgba(0,255,157,0.35), inset 0 0 8px rgba(0,255,157,0.08)",
+        }}>
+          <span style={{
+            width: 7, height: 7, borderRadius: "50%", background: "#00ff9d",
+            boxShadow: "0 0 8px #00ff9d, 0 0 14px #00ff9d",
+            animation: "pulse 1.2s ease-in-out infinite",
+          }} />
+          <span style={{
+            fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", fontWeight: 700,
+            color: "#00ff9d", letterSpacing: "0.14em",
+          }}>
+            INTERACTIVE &mdash; TYPE 'help'
+          </span>
+        </div>
+      </div>
+
+      <TerminalLine text="whoami - Manuvarthi_Seshadri_Naidu" delay={1400} />
+      <TerminalLine text="stack - MERN + ML + CyberSec" delay={2600} />
+      <TerminalLine text="hint - type 'help' to explore" delay={3800} />
+
+      {bootDone && (
+        <div ref={scrollRef} style={{ maxHeight: 220, overflowY: "auto", marginTop: "0.4rem", paddingRight: 6 }}>
+          {history.map((h, i) => (
+            <div key={i} style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.78rem", lineHeight: 1.7, whiteSpace: "pre-wrap", color: h.type === "in" ? "#00ff9d" : "#7a9a90" }}>
+              {h.type === "in"
+                ? (<><span style={{ color: "#2a6a4a", marginRight: 8 }}>~/dev $</span>{h.text}</>)
+                : h.text}
+            </div>
+          ))}
+          <div style={{ display: "flex", alignItems: "center", fontFamily: "'JetBrains Mono'", fontSize: "0.82rem", color: "#00ff9d" }}>
+            <span style={{ color: "#2a6a4a", marginRight: 8 }}>~/dev $</span>
+            <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={onKey}
+              autoComplete="off" spellCheck={false}
+              style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#00ff9d", fontFamily: "'JetBrains Mono'", fontSize: "0.82rem", padding: 0, caretColor: "#00ff9d" }} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* NAV */
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -204,6 +495,7 @@ function Hero() {
   const [typed, setTyped] = useState("");
   const [ri, setRi] = useState(0);
   const [erasing, setErasing] = useState(false);
+  const { leetcode, repos } = useLiveStats();
   // eslint-disable-next-line react-hooks/exhaustive-deps
 useEffect(() => {
   const cur = roles[ri];
@@ -293,23 +585,23 @@ useEffect(() => {
         </div>
 
         <div style={{ opacity: 0, animation: "fadeUp 0.8s ease 0.85s forwards", marginTop: "4rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", maxWidth: 520, background: "rgba(0,255,157,0.06)", border: "1px solid rgba(0,255,157,0.12)", gap: "1px" }}>
-          {[["9.22","CGPA"],["5+","PROJECTS"],["300+","LEETCODE"],["3","CERTS"]].map(([v, l]) => (
-            <div key={l} style={{ background: "#0a0a0f", padding: "1.2rem 0.75rem", textAlign: "center" }}>
-              <div style={{ fontFamily: "'Orbitron'", fontSize: "1.45rem", fontWeight: 700, color: "#00ff9d" }}>{v}</div>
+          {[
+            { v: 9.22, l: "CGPA", live: false },
+            { v: leetcode, l: "LEETCODE", live: typeof leetcode === "number" },
+            { v: repos, l: "GITHUB REPOS", live: typeof repos === "number" },
+            { v: 5, l: "CERTS", live: false },
+          ].map(({ v, l, live }) => (
+            <div key={l} style={{ background: "#0a0a0f", padding: "1.2rem 0.75rem", textAlign: "center", position: "relative" }}>
+              <div style={{ fontFamily: "'Orbitron'", fontSize: "1.45rem", fontWeight: 700, color: "#00ff9d" }}><CountUp value={v} /></div>
               <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a6040", marginTop: 4, letterSpacing: "0.08em" }}>{l}</div>
+              {live && (
+                <span title="live" style={{ position: "absolute", top: 7, right: 7, width: 6, height: 6, borderRadius: "50%", background: "#00ff9d", boxShadow: "0 0 8px #00ff9d", animation: "pulse 1.4s infinite" }} />
+              )}
             </div>
           ))}
         </div>
 
-        <div style={{ opacity: 0, animation: "fadeUp 0.8s ease 1s forwards", marginTop: "2.5rem", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(0,255,157,0.1)", padding: "1.25rem 1.5rem", maxWidth: 480, borderRadius: 2 }}>
-          <div style={{ display: "flex", gap: "0.4rem", marginBottom: "0.9rem" }}>
-            {["#ff5f56","#ffbd2e","#27c93f"].map(c => <span key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
-            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.6rem", color: "#2a5040", marginLeft: 8 }}>seshadri@cbit:~</span>
-          </div>
-          <TerminalLine text="whoami — Manuvarthi_Seshadri_Naidu" delay={1400} />
-          <TerminalLine text="stack — MERN + ML + CyberSec" delay={2600} />
-          <TerminalLine text="location — Hyderabad, India 📍" delay={3800} />
-        </div>
+        <InteractiveTerminal />
       </div>
 
       <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.45, animation: "fadeUp 1s ease 1.2s both" }}>
@@ -395,17 +687,49 @@ function Projects() {
     { code: "PRJ_003", title: "CDC Placements Portal", tag: "AI-POWERED", accent: "#bd00ff", stack: ["MERN","AI APIs","Email Auto","Data Viz"], desc: "AI-powered campus placement management with resume generation and recruitment dashboards.", bullets: ["AI-powered resume generation","Job filtering & management","Automated email notifications","Data visualization dashboards"], github: "https://github.com/Seshmanuvarthi/Placement_Portal" },
     { code: "PRJ_004", title: "Cyber Resilience Validation", tag: "SECURITY", accent: "#ff3c3c", stack: ["Python","SQLite","Paramiko","AWS EC2"], desc: "SSH honeypot logging real attacker sessions with AI classification and a chaos stress-testing engine.", bullets: ["SSH honeypot — 5-table SQLite logging","AI: Recon, Privesc, Lateral, Persistence","Chaos Engine stress-tests on threat","Mirrors real SOC response workflows"], github: "https://github.com/Seshmanuvarthi" },
     { code: "PRJ_005", title: "Civic Issue Reporting App", tag: "MOBILE + DL", accent: "#ffd700", stack: ["Flutter","Deep Learning","GPS","ImageNet"], desc: "Flutter mobile app with AI image classification and GPS routing to auto-report civic issues.", bullets: ["ImageNet transfer learning classifier","Detects garbage, road damage, streetlights","GPS auto-routes to nearest municipal dept","Real-time issue tracking"], github: "https://github.com/SudheeHacakthon/CivicVision/tree/integration-demo" },
-    { 
-      code: "PRJ_006", 
-      title: "PDF Translator — English to Telugu", 
-      tag: "AI + NLP", 
-      accent: "#ff9d00", 
-      stack: ["Flask", "PyMuPDF", "NLLB-200", "HarfBuzz", "SSE"], 
-      desc: "Privacy-first offline PDF translator that converts English documents to Telugu while preserving original layout and formatting.", 
+    {
+      code: "PRJ_006",
+      title: "PDF Translator — English to Telugu",
+      tag: "AI + NLP",
+      accent: "#ff9d00",
+      stack: ["Flask", "PyMuPDF", "NLLB-200", "HarfBuzz", "SSE"],
+      desc: "Privacy-first offline PDF translator that converts English documents to Telugu while preserving original layout and formatting.",
       bullets: [
         "Fully offline AI translation via Meta's NLLB-200 model","Real-time progress streaming via Server-Sent Events (SSE)","Background threading — UI never freezes during translation","HarfBuzz complex shaping for accurate Telugu script rendering","Smart background sampling for clean English text redaction","Apple Silicon MPS acceleration — inference in seconds"
-      ], 
-      github: "https://github.com/Seshmanuvarthi/english-to-telugu-pdf-translator" 
+      ],
+      github: "https://github.com/Seshmanuvarthi/english-to-telugu-pdf-translator"
+    },
+    {
+      code: "PRJ_007",
+      title: "Cyber Threat Intelligence Pipeline",
+      tag: "BIG DATA + CYBER",
+      accent: "#ff006e",
+      stack: ["Kafka","Spark","Flink CEP","GraphX","FastAPI","React","Leaflet"],
+      desc: "Real-time big-data pipeline that ingests live network traffic, classifies threats, and pushes a live world map to a React dashboard every 2 seconds.",
+      bullets: [
+        "Kafka ingestion → parallel Spark + Flink CEP consumers",
+        "Spark Structured Streaming for rule-based threat classification",
+        "GraphX PageRank surfaces high-centrality threat actors",
+        "FastAPI WebSocket pushes live results to React + Leaflet UI",
+        "Animated geo-arcs map attacker-to-target flows on a world map"
+      ],
+      github: "https://github.com/Seshmanuvarthi/cyber-threat-intelligence"
+    },
+    {
+      code: "PRJ_008",
+      title: "TCC Club — Members' Website",
+      tag: "CLIENT WORK",
+      accent: "#38bdf8",
+      stack: ["Next.js 16","TypeScript","Tailwind 4","bcrypt"],
+      desc: "Production members' website for the Telangana Contractors Cultural Club — public site plus a secured single-admin control panel.",
+      bullets: [
+        "Public pages: menu, facilities, gallery, newsletter, payments, bookings",
+        "Admin auth: bcrypt-hashed creds + HttpOnly signed session cookies",
+        "On-demand menu / newsletter uploads with social-share hooks",
+        "Deployed live on Vercel"
+      ],
+      live: "https://tccclub.net",
+      github: "https://github.com/Seshmanuvarthi/tcc-club"
     },
   ];
   return (
@@ -455,7 +779,7 @@ function Experience() {
         <div style={{ position: "relative", paddingLeft: "2.5rem" }}>
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 1, background: "linear-gradient(#00ff9d44,#00d4ff44,rgba(189,0,255,0.3),transparent)" }} />
           {[
-            { type: "INTERNSHIP", color: "#00ff9d", period: "Feb 2026 — Present", title: "Web Development with AI Integration", org: "Vicharanashala Lab, IIT Ropar (NPTEL)", sub: "Mentor: Prof. Sudarshan Iyengar", content: { grid: true, items: ["Selected from NPTEL courses by IIT Ropar","Open-source web dev + AI integration","Hackathon-style development with cohort","MERN, REST APIs, AI-assisted workflows"] } },
+            { type: "INCOMING · INTERNSHIP", color: "#00ff9d", period: "Jul 2026 — Jun 2027", title: "Software Engineer Intern / Trainee", org: "The Hartford — Hyderabad, India", sub: "12-month enterprise SDE internship · Property & Casualty insurance, employee benefits, mutual funds", content: { grid: true, items: ["Java / Python / JavaScript stack with React frontends","SQL relational data modelling + Git version control","Agile ceremonies: stand-ups, sprint planning, retrospectives","Cross-functional collaboration: product, design, QA","Security-aware coding under senior engineer mentorship","AWS / Azure cloud and CI/CD pipeline exposure"] } },
             { type: "EDUCATION", color: "#00d4ff", period: "2023 — May 2027", title: "B.E. Information Technology", org: "Chaitanya Bharathi Institute of Technology", sub: "CGPA: 9.22 / 10.0", content: { tags: true, items: ["DSA","OOP","DBMS","OS","Computer Networks","Machine Learning","Deep Learning","Big Data Analytics"] } },
           ].map((item, i) => (
             <Reveal key={item.type} delay={i * 0.15}>
