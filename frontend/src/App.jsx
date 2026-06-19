@@ -520,63 +520,64 @@ function Hero() {
       <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,255,157,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,157,0.025) 1px,transparent 1px)", backgroundSize: "52px 52px", pointerEvents: "none" }} />
       <motion.div style={{ position: "absolute", top: "25%", left: "5%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle,rgba(0,255,157,0.05) 0%,transparent 65%)", pointerEvents: "none", y: heroY }} />
 
-      <motion.div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 2rem 160px", position: "relative", zIndex: 1, width: "100%", y: heroY, opacity: heroOpacity }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 2rem 160px", position: "relative", zIndex: 1, width: "100%" }}>
 
-        <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.7rem", background: "rgba(0,255,157,0.06)", border: "1px solid rgba(0,255,157,0.18)", borderRadius: 2, padding: "5px 16px", marginBottom: "2rem", animation: "borderPulse 3s ease-in-out infinite" }}>
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#00ff9d", boxShadow: "0 0 10px #00ff9d", animation: "pulse 2s infinite" }} />
-            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.68rem", color: "#00ff9d", letterSpacing: "0.18em" }}>SYSTEM_ONLINE // AVAILABLE_FOR_HIRE</span>
-          </div>
+        {/* Text content fades on scroll */}
+        <motion.div style={{ y: heroY, opacity: heroOpacity }}>
+
+          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.7rem", background: "rgba(0,255,157,0.06)", border: "1px solid rgba(0,255,157,0.18)", borderRadius: 2, padding: "5px 16px", marginBottom: "2rem", animation: "borderPulse 3s ease-in-out infinite" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#00ff9d", boxShadow: "0 0 10px #00ff9d", animation: "pulse 2s infinite" }} />
+              <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.68rem", color: "#00ff9d", letterSpacing: "0.18em" }}>SYSTEM_ONLINE // AVAILABLE_FOR_HIRE</span>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
+            <h1 style={{ fontFamily: "'Orbitron'", lineHeight: 1.05, letterSpacing: "0.03em" }}>
+              <span style={{ display: "block", fontSize: "clamp(1rem,2.5vw,1.4rem)", color: "rgba(0,255,157,0.4)", fontWeight: 400, marginBottom: "0.3rem" }}>INITIALIZING //</span>
+              <GlitchText style={{ display: "block", fontSize: "clamp(2.8rem,7vw,5.8rem)", fontWeight: 900, color: "#ddeee6" }}>MANUVARTHI</GlitchText>
+              <span style={{ display: "block", fontSize: "clamp(2.8rem,7vw,5.8rem)", fontWeight: 900, background: "linear-gradient(90deg,#00ff9d,#00d4ff 60%,#bd00ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundSize: "200% auto", animation: "shimmer 4s linear infinite" }}>SESHADRI NAIDU</span>
+            </h1>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: "1.5rem", height: 34, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.78rem", color: "rgba(0,255,157,0.4)" }}>&gt;&gt;</span>
+            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "clamp(0.85rem,2vw,1.1rem)", color: "#3a9a70" }}>{typed}</span>
+            <span style={{ animation: "blink 0.75s infinite", color: "#00ff9d", fontFamily: "'JetBrains Mono'" }}>▋</span>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.55, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ marginTop: "1.75rem", maxWidth: 560, borderLeft: "3px solid #00ff9d", paddingLeft: "1.25rem", background: "rgba(0,0,0,0.35)" }}>
+            <p style={{ fontFamily: "'Space Grotesk'", fontSize: "0.92rem", color: "#7a9e90", lineHeight: 1.85, padding: "1rem 0 1rem 0.25rem" }}>
+              IT undergraduate at <span style={{ color: "#00ff9d", fontWeight: 600 }}>CBIT</span> with{" "}
+              <span style={{ fontFamily: "'JetBrains Mono'", color: "#00d4ff" }}>9.22 CGPA</span>.
+              Building production-grade apps, architecting ML/DL pipelines, and researching cyber resilience systems.
+            </p>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}
+            style={{ marginTop: "2.5rem", display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            <MagneticBtn primary onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>VIEW_PROJECTS</MagneticBtn>
+            <MagneticBtn href="https://github.com/Seshmanuvarthi" color="#00d4ff">GITHUB ↗</MagneticBtn>
+            <MagneticBtn href="https://www.linkedin.com/in/seshadri-naidu-manuvarthi-366466295/" color="#bd00ff">LINKEDIN ↗</MagneticBtn>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.8 }}
+            style={{ marginTop: "4rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", maxWidth: 520, background: "rgba(0,255,157,0.04)", border: "1px solid rgba(0,255,157,0.12)", gap: "1px" }}>
+            {[{ v: 9.22, l: "CGPA", live: false },{ v: leetcode, l: "LEETCODE", live: typeof leetcode === "number" },{ v: repos, l: "GITHUB REPOS", live: typeof repos === "number" },{ v: 5, l: "CERTS", live: false }].map(({ v, l, live }) => (
+              <motion.div key={l} whileHover={{ scale: 1.05, background: "rgba(0,255,157,0.08)" }} style={{ background: "#0a0a0f", padding: "1.2rem 0.75rem", textAlign: "center", position: "relative", transition: "background 0.3s" }}>
+                <div style={{ fontFamily: "'Orbitron'", fontSize: "1.45rem", fontWeight: 700, color: "#00ff9d", animation: "glow 3s ease-in-out infinite" }}><CountUp value={v} /></div>
+                <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a6040", marginTop: 4, letterSpacing: "0.08em" }}>{l}</div>
+                {live && <span title="live" style={{ position: "absolute", top: 7, right: 7, width: 6, height: 6, borderRadius: "50%", background: "#00ff9d", boxShadow: "0 0 8px #00ff9d", animation: "pulse 1.4s infinite" }} />}
+              </motion.div>
+            ))}
+          </motion.div>
+
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
-          <h1 style={{ fontFamily: "'Orbitron'", lineHeight: 1.05, letterSpacing: "0.03em" }}>
-            <span style={{ display: "block", fontSize: "clamp(1rem,2.5vw,1.4rem)", color: "rgba(0,255,157,0.4)", fontWeight: 400, marginBottom: "0.3rem" }}>INITIALIZING //</span>
-            <GlitchText style={{ display: "block", fontSize: "clamp(2.8rem,7vw,5.8rem)", fontWeight: 900, color: "#ddeee6" }}>MANUVARTHI</GlitchText>
-            <span style={{ display: "block", fontSize: "clamp(2.8rem,7vw,5.8rem)", fontWeight: 900, background: "linear-gradient(90deg,#00ff9d,#00d4ff 60%,#bd00ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundSize: "200% auto", animation: "shimmer 4s linear infinite" }}>SESHADRI NAIDU</span>
-          </h1>
-        </motion.div>
+        {/* Terminal always full brightness — outside the fading wrapper */}
+        <InteractiveTerminal />
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ marginTop: "1.5rem", height: 34, display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.78rem", color: "rgba(0,255,157,0.4)" }}>&gt;&gt;</span>
-          <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "clamp(0.85rem,2vw,1.1rem)", color: "#3a9a70" }}>{typed}</span>
-          <span style={{ animation: "blink 0.75s infinite", color: "#00ff9d", fontFamily: "'JetBrains Mono'" }}>▋</span>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.55, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{ marginTop: "1.75rem", maxWidth: 560, borderLeft: "3px solid #00ff9d", paddingLeft: "1.25rem", background: "rgba(0,0,0,0.35)" }}>
-          <p style={{ fontFamily: "'Space Grotesk'", fontSize: "0.92rem", color: "#7a9e90", lineHeight: 1.85, padding: "1rem 0 1rem 0.25rem" }}>
-            IT undergraduate at <span style={{ color: "#00ff9d", fontWeight: 600 }}>CBIT</span> with{" "}
-            <span style={{ fontFamily: "'JetBrains Mono'", color: "#00d4ff" }}>9.22 CGPA</span>.
-            Building production-grade apps, architecting ML/DL pipelines, and researching cyber resilience systems.
-          </p>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}
-          style={{ marginTop: "2.5rem", display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-          <MagneticBtn primary onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>VIEW_PROJECTS</MagneticBtn>
-          <MagneticBtn href="https://github.com/Seshmanuvarthi" color="#00d4ff">GITHUB ↗</MagneticBtn>
-          <MagneticBtn href="https://www.linkedin.com/in/seshadri-naidu-manuvarthi-366466295/" color="#bd00ff">LINKEDIN ↗</MagneticBtn>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.8 }}
-          style={{ marginTop: "4rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)", maxWidth: 520, background: "rgba(0,255,157,0.04)", border: "1px solid rgba(0,255,157,0.12)", gap: "1px" }}>
-          {[{ v: 9.22, l: "CGPA", live: false },{ v: leetcode, l: "LEETCODE", live: typeof leetcode === "number" },{ v: repos, l: "GITHUB REPOS", live: typeof repos === "number" },{ v: 5, l: "CERTS", live: false }].map(({ v, l, live }) => (
-            <motion.div key={l} whileHover={{ scale: 1.05, background: "rgba(0,255,157,0.08)" }} style={{ background: "#0a0a0f", padding: "1.2rem 0.75rem", textAlign: "center", position: "relative", transition: "background 0.3s" }}>
-              <div style={{ fontFamily: "'Orbitron'", fontSize: "1.45rem", fontWeight: 700, color: "#00ff9d", animation: "glow 3s ease-in-out infinite" }}><CountUp value={v} /></div>
-              <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a6040", marginTop: 4, letterSpacing: "0.08em" }}>{l}</div>
-              {live && <span title="live" style={{ position: "absolute", top: 7, right: 7, width: 6, height: 6, borderRadius: "50%", background: "#00ff9d", boxShadow: "0 0 8px #00ff9d", animation: "pulse 1.4s infinite" }} />}
-            </motion.div>
-          ))}
-        </motion.div>
-
-      </motion.div>
-
-      {/* Terminal lives outside the fading motion.div — always full brightness */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 2 }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 2rem 80px" }}>
-          <InteractiveTerminal />
-        </div>
       </div>
 
       <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.45 }}>
