@@ -186,53 +186,77 @@ function NeuralBg() {
   );
 }
 
-/* ─── CYBER CARD (3D tilt + glow explosion) ─────────────────── */
+/* ─── CYBER CARD (border trace + scan line + spotlight) ─────── */
 function CyberCard({ children, accent = "#00ff9d", style = {} }) {
   const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-80, 80], [10, -10]);
-  const rotateY = useTransform(x, [-80, 80], [-10, 10]);
-  const glowX = useTransform(x, [-80, 80], [0, 100]);
-  const glowY = useTransform(y, [-80, 80], [0, 100]);
   const [hov, setHov] = useState(false);
+  const [spot, setSpot] = useState({ x: 50, y: 50 });
 
   const onMove = (e) => {
-    const rect = ref.current.getBoundingClientRect();
-    x.set(e.clientX - rect.left - rect.width / 2);
-    y.set(e.clientY - rect.top - rect.height / 2);
+    const r = ref.current.getBoundingClientRect();
+    setSpot({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
   };
-  const onLeave = () => { x.set(0); y.set(0); setHov(false); };
 
   return (
     <motion.div
       ref={ref}
       onMouseMove={onMove}
       onMouseEnter={() => setHov(true)}
-      onMouseLeave={onLeave}
+      onMouseLeave={() => setHov(false)}
+      whileHover={{ scale: 1.025 }}
+      transition={{ type: "spring", stiffness: 260, damping: 28 }}
       style={{
-        rotateX, rotateY,
-        transformStyle: "preserve-3d",
-        position: "relative",
-        background: hov ? `rgba(0,0,0,0.85)` : "rgba(10,14,20,0.85)",
-        border: `1px solid ${hov ? accent + "66" : accent + "1a"}`,
-        borderRadius: 2,
-        padding: "1.75rem",
-        boxShadow: hov ? `0 20px 60px ${accent}20, 0 0 0 1px ${accent}22, inset 0 0 40px ${accent}06` : "none",
-        transition: "background 0.3s, border-color 0.3s, box-shadow 0.4s",
+        position: "relative", borderRadius: 2, padding: "1.75rem",
+        background: "rgba(10,14,20,0.92)", overflow: "hidden",
+        boxShadow: hov ? `0 0 0 1px ${accent}55, 0 8px 40px ${accent}14` : `0 0 0 1px ${accent}18`,
+        transition: "box-shadow 0.4s",
         ...style,
       }}
     >
-      <motion.div style={{
-        position: "absolute", inset: 0, borderRadius: 2, pointerEvents: "none",
-        opacity: hov ? 0.12 : 0,
-        background: useTransform([glowX, glowY], ([gx, gy]) => `radial-gradient(circle at ${gx}% ${gy}%, ${accent} 0%, transparent 60%)`),
-        transition: "opacity 0.3s",
+      {/* Rotating border light */}
+      <motion.div
+        animate={hov ? { rotate: 360 } : { rotate: 0 }}
+        transition={{ duration: 2.5, ease: "linear", repeat: hov ? Infinity : 0 }}
+        style={{
+          position: "absolute", inset: -2, borderRadius: 3, zIndex: 0, pointerEvents: "none",
+          background: `conic-gradient(from 0deg, transparent 0deg, ${accent}cc 40deg, transparent 80deg, transparent 360deg)`,
+          opacity: hov ? 1 : 0, transition: "opacity 0.4s",
+        }}
+      />
+      {/* Inner fill to mask the rotating border */}
+      <div style={{ position: "absolute", inset: 1, background: "rgba(10,14,20,0.96)", borderRadius: 2, zIndex: 1 }} />
+
+      {/* Cursor spotlight */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", borderRadius: 2,
+        background: hov ? `radial-gradient(circle at ${spot.x}% ${spot.y}%, ${accent}1a 0%, transparent 55%)` : "none",
+        transition: "background 0.1s",
       }} />
+
+      {/* Scan line sweep */}
+      <AnimatePresence>
+        {hov && (
+          <motion.div
+            key="scan"
+            initial={{ top: "-2px" }}
+            animate={{ top: "102%" }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4, ease: "linear", repeat: Infinity, repeatDelay: 0.8 }}
+            style={{
+              position: "absolute", left: 0, right: 0, height: 2, zIndex: 3, pointerEvents: "none",
+              background: `linear-gradient(90deg, transparent 0%, ${accent}99 30%, ${accent} 50%, ${accent}99 70%, transparent 100%)`,
+              boxShadow: `0 0 8px ${accent}88`,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Corner accents */}
       {[["top:-1px;left:-1px;border-top:2px solid;border-left:2px solid","tl"],["top:-1px;right:-1px;border-top:2px solid;border-right:2px solid","tr"],["bottom:-1px;left:-1px;border-bottom:2px solid;border-left:2px solid","bl"],["bottom:-1px;right:-1px;border-bottom:2px solid;border-right:2px solid","br"]].map(([s, k]) => (
-        <span key={k} style={{ position: "absolute", width: 14, height: 14, ...Object.fromEntries(s.split(";").map(x => { const [k2, v] = x.split(":"); return [k2.replace(/-([a-z])/g, (_, c) => c.toUpperCase()), v]; })), borderColor: accent, transition: "all 0.3s", opacity: hov ? 1 : 0.35 }} />
+        <span key={k} style={{ position: "absolute", width: 14, height: 14, zIndex: 4, ...Object.fromEntries(s.split(";").map(p => { const [k2, v] = p.split(":"); return [k2.replace(/-([a-z])/g, (_, c) => c.toUpperCase()), v]; })), borderColor: accent, transition: "opacity 0.3s", opacity: hov ? 1 : 0.3 }} />
       ))}
-      {children}
+
+      <div style={{ position: "relative", zIndex: 4 }}>{children}</div>
     </motion.div>
   );
 }
