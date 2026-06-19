@@ -203,28 +203,28 @@ function CyberCard({ children, accent = "#00ff9d", style = {} }) {
       onMouseMove={onMove}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      whileHover={{ scale: 1.025 }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
       style={{
         position: "relative", borderRadius: 2, padding: "1.75rem",
         background: "rgba(10,14,20,0.92)", overflow: "hidden",
-        boxShadow: hov ? `0 0 0 1px ${accent}55, 0 8px 40px ${accent}14` : `0 0 0 1px ${accent}18`,
-        transition: "box-shadow 0.4s",
+        /* border drawn by inner divs — no box-shadow bleeding onto neighbours */
+        outline: `1px solid ${hov ? accent + "55" : accent + "18"}`,
+        transition: "outline-color 0.4s",
+        isolation: "isolate",
         ...style,
       }}
     >
-      {/* Rotating border light */}
+      {/* Rotating border light — clipped by parent overflow:hidden */}
       <motion.div
         animate={hov ? { rotate: 360 } : { rotate: 0 }}
         transition={{ duration: 2.5, ease: "linear", repeat: hov ? Infinity : 0 }}
         style={{
-          position: "absolute", inset: -2, borderRadius: 3, zIndex: 0, pointerEvents: "none",
+          position: "absolute", inset: 0, borderRadius: 2, zIndex: 0, pointerEvents: "none",
           background: `conic-gradient(from 0deg, transparent 0deg, ${accent}cc 40deg, transparent 80deg, transparent 360deg)`,
           opacity: hov ? 1 : 0, transition: "opacity 0.4s",
         }}
       />
-      {/* Inner fill to mask the rotating border */}
-      <div style={{ position: "absolute", inset: 1, background: "rgba(10,14,20,0.96)", borderRadius: 2, zIndex: 1 }} />
+      {/* Inner fill to mask the rotating border, leaving only the edge lit */}
+      <div style={{ position: "absolute", inset: 1, background: "rgba(10,14,20,0.97)", borderRadius: 1, zIndex: 1 }} />
 
       {/* Cursor spotlight */}
       <div style={{
