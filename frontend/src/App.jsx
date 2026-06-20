@@ -233,23 +233,25 @@ function CyberCard({ children, accent = "#00ff9d", style = {} }) {
         transition: "background 0.1s",
       }} />
 
-      {/* Scan line sweep */}
-      <AnimatePresence>
-        {hov && (
-          <motion.div
-            key="scan"
-            initial={{ top: "-2px" }}
-            animate={{ top: "102%" }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: "linear", repeat: Infinity, repeatDelay: 0.8 }}
-            style={{
-              position: "absolute", left: 0, right: 0, height: 2, zIndex: 3, pointerEvents: "none",
-              background: `linear-gradient(90deg, transparent 0%, ${accent}99 30%, ${accent} 50%, ${accent}99 70%, transparent 100%)`,
-              boxShadow: `0 0 8px ${accent}88`,
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {/* Scan line — clipped by own overflow:hidden wrapper so it can never escape */}
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 3, pointerEvents: "none", borderRadius: 2 }}>
+        <AnimatePresence>
+          {hov && (
+            <motion.div
+              key="scan"
+              initial={{ y: "-100%" }}
+              animate={{ y: "5000%" }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.4, ease: "linear", repeat: Infinity, repeatDelay: 0.8 }}
+              style={{
+                position: "absolute", top: 0, left: 0, right: 0, height: 2,
+                background: `linear-gradient(90deg, transparent 0%, ${accent}99 30%, ${accent} 50%, ${accent}99 70%, transparent 100%)`,
+                boxShadow: `0 0 8px ${accent}88`,
+              }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Corner accents */}
       {[["top:-1px;left:-1px;border-top:2px solid;border-left:2px solid","tl"],["top:-1px;right:-1px;border-top:2px solid;border-right:2px solid","tr"],["bottom:-1px;left:-1px;border-bottom:2px solid;border-left:2px solid","bl"],["bottom:-1px;right:-1px;border-bottom:2px solid;border-right:2px solid","br"]].map(([s, k]) => (
