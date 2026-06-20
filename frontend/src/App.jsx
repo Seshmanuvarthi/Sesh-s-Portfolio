@@ -19,7 +19,8 @@ const GlobalStyles = () => (
 
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
     @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-    @keyframes glow{0%,100%{text-shadow:0 0 10px #00ff9d66,0 0 20px #00ff9d33}50%{text-shadow:0 0 20px #00ff9d,0 0 40px #00ff9d66,0 0 80px #00ff9d22}}
+    :root{--accent:#00ff9d;--accent-rgb:0,255,157}
+    @keyframes glow{0%,100%{text-shadow:0 0 10px rgba(var(--accent-rgb),0.4),0 0 20px rgba(var(--accent-rgb),0.2)}50%{text-shadow:0 0 20px var(--accent),0 0 40px rgba(var(--accent-rgb),0.4),0 0 80px rgba(var(--accent-rgb),0.13)}}
     @keyframes scanDown{0%{transform:translateY(-8px);opacity:0}50%{opacity:1}100%{transform:translateY(8px);opacity:0}}
     @keyframes float{0%,100%{transform:translateY(0px) rotate(0deg)}33%{transform:translateY(-18px) rotate(2deg)}66%{transform:translateY(-8px) rotate(-1deg)}}
     @keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -42,7 +43,164 @@ function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   return (
-    <motion.div style={{ scaleX, position: "fixed", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,#00ff9d,#00d4ff,#bd00ff)", transformOrigin: "0%", zIndex: 9998 }} />
+    <motion.div style={{ scaleX, position: "fixed", top: 0, left: 0, right: 0, height: 2, background: "var(--accent)", boxShadow: "0 0 8px rgba(var(--accent-rgb),0.7)", transformOrigin: "0%", zIndex: 9998 }} />
+  );
+}
+
+/* ─── ACCENT COLOR SHIFTER ───────────────────────────────────── */
+function AccentColorShifter() {
+  const { scrollYProgress } = useScroll();
+  useEffect(() => {
+    const stops = [
+      { at: 0,    r: 0,   g: 255, b: 157 },
+      { at: 0.18, r: 0,   g: 212, b: 255 },
+      { at: 0.42, r: 189, g: 0,   b: 255 },
+      { at: 0.62, r: 255, g: 157, b: 0   },
+      { at: 0.82, r: 255, g: 0,   b: 110 },
+      { at: 1,    r: 0,   g: 255, b: 157 },
+    ];
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const toHex = (n) => Math.round(n).toString(16).padStart(2, "0");
+    const unsub = scrollYProgress.on("change", (v) => {
+      let from = stops[0], to = stops[1];
+      for (let i = 0; i < stops.length - 1; i++) {
+        if (v >= stops[i].at && v <= stops[i + 1].at) { from = stops[i]; to = stops[i + 1]; break; }
+      }
+      const t = from.at === to.at ? 0 : clamp((v - from.at) / (to.at - from.at), 0, 1);
+      const r = lerp(from.r, to.r, t), g = lerp(from.g, to.g, t), b = lerp(from.b, to.b, t);
+      document.documentElement.style.setProperty("--accent", `#${toHex(r)}${toHex(g)}${toHex(b)}`);
+      document.documentElement.style.setProperty("--accent-rgb", `${Math.round(r)},${Math.round(g)},${Math.round(b)}`);
+    });
+    return unsub;
+  }, [scrollYProgress]);
+  return null;
+}
+
+/* ─── COMMAND PALETTE ────────────────────────────────────────── */
+const COMMANDS = [
+  { id: "about",      group: "NAVIGATE", icon: "⌂", label: "About",        hint: "Scroll to hero section",       action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "skills",     group: "NAVIGATE", icon: "⚡", label: "Skills",       hint: "Tech stack & proficiency",     action: () => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "projects",   group: "NAVIGATE", icon: "◈", label: "Projects",     hint: "8 production builds",          action: () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "experience", group: "NAVIGATE", icon: "◉", label: "Experience",   hint: "Career & education timeline",  action: () => document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "certs",      group: "NAVIGATE", icon: "★", label: "Achievements", hint: "Certifications & hackathons",  action: () => document.getElementById("achievements")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "contact",    group: "NAVIGATE", icon: "✉", label: "Contact",      hint: "Get in touch",                 action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) },
+  { id: "resume",     group: "ACTIONS",  icon: "↗", label: "Open Resume",  hint: "View PDF in new tab",          action: () => window.open("/resume.pdf", "_blank") },
+  { id: "email",      group: "ACTIONS",  icon: "⊕", label: "Copy Email",   hint: "seshmanuvarthi27@gmail.com",  action: () => navigator.clipboard?.writeText("seshmanuvarthi27@gmail.com") },
+  { id: "github",     group: "LINKS",    icon: "↗", label: "GitHub",       hint: "Seshmanuvarthi",               action: () => window.open("https://github.com/Seshmanuvarthi", "_blank") },
+  { id: "linkedin",   group: "LINKS",    icon: "↗", label: "LinkedIn",     hint: "seshadri-naidu-manuvarthi",   action: () => window.open("https://www.linkedin.com/in/seshadri-naidu-manuvarthi-366466295/", "_blank") },
+  { id: "leetcode",   group: "LINKS",    icon: "↗", label: "LeetCode",     hint: "SESH_MANUVARTHI · 425+ solved", action: () => window.open("https://leetcode.com/u/SESH_MANUVARTHI/", "_blank") },
+];
+
+function CommandPalette({ onClose }) {
+  const [query, setQuery] = useState("");
+  const [sel, setSel] = useState(0);
+  const inputRef = useRef(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const filtered = query.trim()
+    ? COMMANDS.filter(c =>
+        c.label.toLowerCase().includes(query.toLowerCase()) ||
+        c.hint.toLowerCase().includes(query.toLowerCase()) ||
+        c.group.toLowerCase().includes(query.toLowerCase())
+      )
+    : COMMANDS;
+
+  const grouped = filtered.reduce((acc, cmd) => {
+    if (!acc[cmd.group]) acc[cmd.group] = [];
+    acc[cmd.group].push(cmd);
+    return acc;
+  }, {});
+
+  useEffect(() => { setSel(0); }, [query]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "ArrowDown") { e.preventDefault(); setSel(s => Math.min(s + 1, filtered.length - 1)); }
+      if (e.key === "ArrowUp") { e.preventDefault(); setSel(s => Math.max(s - 1, 0)); }
+      if (e.key === "Enter") { filtered[sel]?.action(); onClose(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [filtered, sel, onClose]);
+
+  const execute = (cmd) => { cmd.action(); onClose(); };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(14px)", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "14vh" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: -16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: -16 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        onClick={e => e.stopPropagation()}
+        style={{ width: "100%", maxWidth: 560, background: "rgba(8,11,16,0.98)", border: "1px solid rgba(var(--accent-rgb),0.25)", borderRadius: 6, boxShadow: "0 0 0 1px rgba(var(--accent-rgb),0.08), 0 32px 100px rgba(0,0,0,0.85), 0 0 60px rgba(var(--accent-rgb),0.06)", overflow: "hidden" }}
+      >
+        {/* Input row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <span style={{ color: "var(--accent)", fontFamily: "'JetBrains Mono'", fontSize: "1rem", opacity: 0.7 }}>⌘</span>
+          <input
+            ref={inputRef} value={query} onChange={e => setQuery(e.target.value)}
+            placeholder="Type a command or search…"
+            style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#c8d6e5", fontFamily: "'Space Grotesk'", fontSize: "0.92rem" }}
+          />
+          <kbd style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a6040", border: "1px solid rgba(255,255,255,0.1)", padding: "2px 7px", borderRadius: 3, background: "rgba(255,255,255,0.03)" }}>ESC</kbd>
+        </div>
+
+        {/* Results */}
+        <div style={{ maxHeight: 380, overflowY: "auto" }}>
+          {Object.entries(grouped).map(([group, cmds]) => (
+            <div key={group}>
+              <div style={{ padding: "10px 18px 4px", fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "#2a5040", letterSpacing: "0.18em" }}>{group}</div>
+              {cmds.map(cmd => {
+                const idx = filtered.indexOf(cmd);
+                const active = idx === sel;
+                return (
+                  <div
+                    key={cmd.id}
+                    onClick={() => execute(cmd)}
+                    onMouseEnter={() => setSel(idx)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 12, padding: "10px 18px",
+                      cursor: "pointer", transition: "background 0.12s",
+                      background: active ? "rgba(var(--accent-rgb),0.07)" : "transparent",
+                      borderLeft: active ? "2px solid var(--accent)" : "2px solid transparent",
+                    }}
+                  >
+                    <span style={{ fontSize: "0.85rem", width: 20, textAlign: "center", color: active ? "var(--accent)" : "#2a5040", transition: "color 0.12s", flexShrink: 0 }}>{cmd.icon}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: "'Space Grotesk'", fontSize: "0.85rem", fontWeight: 500, color: active ? "#ddeee6" : "#7a9a90", transition: "color 0.12s" }}>{cmd.label}</div>
+                      <div style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: "#2a4a38", marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cmd.hint}</div>
+                    </div>
+                    {active && <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.6rem", color: "var(--accent)", opacity: 0.5, flexShrink: 0 }}>↵</span>}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <div style={{ padding: "28px 18px", textAlign: "center", fontFamily: "'JetBrains Mono'", fontSize: "0.72rem", color: "#2a6040" }}>No results for "{query}"</div>
+          )}
+        </div>
+
+        {/* Footer hints */}
+        <div style={{ padding: "8px 18px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 20 }}>
+          {[["↑↓", "navigate"], ["↵", "select"], ["esc", "close"]].map(([key, label]) => (
+            <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: "'JetBrains Mono'", fontSize: "0.56rem", color: "#1a4030" }}>
+              <kbd style={{ border: "1px solid rgba(255,255,255,0.07)", padding: "1px 5px", borderRadius: 2, color: "#2a5040", background: "rgba(255,255,255,0.02)" }}>{key}</kbd>
+              {label}
+            </div>
+          ))}
+          <div style={{ marginLeft: "auto", fontFamily: "'JetBrains Mono'", fontSize: "0.56rem", color: "#1a4030" }}>⌘K to toggle</div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -186,79 +344,116 @@ function NeuralBg() {
   );
 }
 
-/* ─── CYBER CARD (border trace + scan line + spotlight) ─────── */
+/* ─── CYBER CARD (border beam + corners + parallax content) ──── */
 function CyberCard({ children, accent = "#00ff9d", style = {} }) {
   const ref = useRef(null);
   const [hov, setHov] = useState(false);
   const [spot, setSpot] = useState({ x: 50, y: 50 });
+  const [ripple, setRipple] = useState(null);
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const cx = useSpring(mx, { stiffness: 180, damping: 22 });
+  const cy = useSpring(my, { stiffness: 180, damping: 22 });
 
   const onMove = (e) => {
     const r = ref.current.getBoundingClientRect();
-    setSpot({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+    const sx = (e.clientX - r.left) / r.width;
+    const sy = (e.clientY - r.top) / r.height;
+    setSpot({ x: sx * 100, y: sy * 100 });
+    mx.set((sx - 0.5) * 10);
+    my.set((sy - 0.5) * 10);
   };
+
+  const onEnter = (e) => {
+    setHov(true);
+    const r = ref.current.getBoundingClientRect();
+    setRipple({ x: e.clientX - r.left, y: e.clientY - r.top, id: Date.now() });
+  };
+
+  const onLeave = () => {
+    setHov(false);
+    mx.set(0);
+    my.set(0);
+  };
+
+  const corners = [
+    { top: 0,    left:  0, borderTop:    `2px solid ${accent}`, borderLeft:  `2px solid ${accent}` },
+    { top: 0,    right: 0, borderTop:    `2px solid ${accent}`, borderRight: `2px solid ${accent}` },
+    { bottom: 0, left:  0, borderBottom: `2px solid ${accent}`, borderLeft:  `2px solid ${accent}` },
+    { bottom: 0, right: 0, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` },
+  ];
 
   return (
     <motion.div
       ref={ref}
       onMouseMove={onMove}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
       style={{
         position: "relative", borderRadius: 2, padding: "1.75rem",
-        background: "rgba(10,14,20,0.92)", overflow: "hidden",
-        /* border drawn by inner divs — no box-shadow bleeding onto neighbours */
-        outline: `1px solid ${hov ? accent + "55" : accent + "18"}`,
+        background: "rgba(10,14,20,0.92)",
+        outline: `1px solid ${hov ? accent + "30" : accent + "12"}`,
         transition: "outline-color 0.4s",
         isolation: "isolate",
+        overflow: "hidden",
         ...style,
       }}
     >
-      {/* Rotating border light — clipped by parent overflow:hidden */}
-      <motion.div
-        animate={hov ? { rotate: 360 } : { rotate: 0 }}
-        transition={{ duration: 2.5, ease: "linear", repeat: hov ? Infinity : 0 }}
-        style={{
-          position: "absolute", inset: 0, borderRadius: 2, zIndex: 0, pointerEvents: "none",
-          background: `conic-gradient(from 0deg, transparent 0deg, ${accent}cc 40deg, transparent 80deg, transparent 360deg)`,
-          opacity: hov ? 1 : 0, transition: "opacity 0.4s",
-        }}
-      />
-      {/* Inner fill to mask the rotating border, leaving only the edge lit */}
-      <div style={{ position: "absolute", inset: 1, background: "rgba(10,14,20,0.97)", borderRadius: 1, zIndex: 1 }} />
+      {/* Border beam */}
+      <div style={{ position: "absolute", inset: 0, borderRadius: 2, overflow: "hidden", zIndex: 0, pointerEvents: "none" }}>
+        <motion.div
+          animate={hov ? { rotate: 360 } : { rotate: 0 }}
+          transition={{ duration: 1.8, ease: "linear", repeat: hov ? Infinity : 0 }}
+          style={{
+            position: "absolute", inset: 0, borderRadius: 2,
+            background: `conic-gradient(from 0deg, transparent 340deg, ${accent}55 352deg, ${accent}ff 357deg, ${accent}55 362deg, transparent 365deg)`,
+            opacity: hov ? 1 : 0, transition: "opacity 0.35s",
+          }}
+        />
+        <div style={{ position: "absolute", inset: 1, background: "rgba(10,14,20,0.97)", borderRadius: 1 }} />
+      </div>
+
+      {/* Ripple pulse on hover enter */}
+      <AnimatePresence>
+        {ripple && (
+          <motion.span
+            key={ripple.id}
+            initial={{ scale: 0, opacity: 0.5 }}
+            animate={{ scale: 8, opacity: 0 }}
+            exit={{}}
+            onAnimationComplete={() => setRipple(null)}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            style={{
+              position: "absolute", borderRadius: "50%",
+              width: 60, height: 60, pointerEvents: "none", zIndex: 1,
+              left: ripple.x - 30, top: ripple.y - 30,
+              background: `radial-gradient(circle, ${accent}40 0%, transparent 70%)`,
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Cursor spotlight */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", borderRadius: 2,
-        background: hov ? `radial-gradient(circle at ${spot.x}% ${spot.y}%, ${accent}1a 0%, transparent 55%)` : "none",
-        transition: "background 0.1s",
+        background: hov ? `radial-gradient(circle at ${spot.x}% ${spot.y}%, ${accent}14 0%, transparent 58%)` : "none",
+        transition: "background 0.08s",
       }} />
 
-      {/* Scan line — clipped by own overflow:hidden wrapper so it can never escape */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 3, pointerEvents: "none", borderRadius: 2 }}>
-        <AnimatePresence>
-          {hov && (
-            <motion.div
-              key="scan"
-              initial={{ y: "-100%" }}
-              animate={{ y: "5000%" }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.4, ease: "linear", repeat: Infinity, repeatDelay: 0.8 }}
-              style={{
-                position: "absolute", top: 0, left: 0, right: 0, height: 2,
-                background: `linear-gradient(90deg, transparent 0%, ${accent}99 30%, ${accent} 50%, ${accent}99 70%, transparent 100%)`,
-                boxShadow: `0 0 8px ${accent}88`,
-              }}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Corner accents */}
-      {[["top:-1px;left:-1px;border-top:2px solid;border-left:2px solid","tl"],["top:-1px;right:-1px;border-top:2px solid;border-right:2px solid","tr"],["bottom:-1px;left:-1px;border-bottom:2px solid;border-left:2px solid","bl"],["bottom:-1px;right:-1px;border-bottom:2px solid;border-right:2px solid","br"]].map(([s, k]) => (
-        <span key={k} style={{ position: "absolute", width: 14, height: 14, zIndex: 4, ...Object.fromEntries(s.split(";").map(p => { const [k2, v] = p.split(":"); return [k2.replace(/-([a-z])/g, (_, c) => c.toUpperCase()), v]; })), borderColor: accent, transition: "opacity 0.3s", opacity: hov ? 1 : 0.3 }} />
+      {/* Corner brackets */}
+      {corners.map((s, i) => (
+        <motion.span key={i}
+          animate={{ width: hov ? 26 : 8, height: hov ? 26 : 8, opacity: hov ? 1 : 0.2 }}
+          transition={{ duration: 0.22, delay: i * 0.04, ease: "easeOut" }}
+          style={{ position: "absolute", zIndex: 3, pointerEvents: "none", ...s }}
+        />
       ))}
 
-      <div style={{ position: "relative", zIndex: 4 }}>{children}</div>
+      {/* Content floats toward cursor via spring parallax */}
+      <motion.div style={{ x: cx, y: cy, position: "relative", zIndex: 4 }}>
+        {children}
+      </motion.div>
     </motion.div>
   );
 }
@@ -273,7 +468,7 @@ function SectionHeader({ idx, title, sub }) {
           <motion.div
             initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
             transition={{ duration: 1, ease: "easeOut" }}
-            style={{ flex: 1, height: "1px", background: "linear-gradient(90deg,#00ff9d55,transparent)", transformOrigin: "left" }}
+            style={{ flex: 1, height: "1px", background: "linear-gradient(90deg,rgba(var(--accent-rgb),0.5),transparent)", transformOrigin: "left" }}
           />
         </div>
         <h2 style={{ fontFamily: "'Orbitron'", fontSize: "clamp(1.8rem,3.5vw,2.6rem)", fontWeight: 700, color: "#e2ede8", letterSpacing: "0.04em" }}>{title}</h2>
@@ -485,7 +680,7 @@ function InteractiveTerminal() {
 }
 
 /* ─── NAV ───────────────────────────────────────────────────── */
-function Nav() {
+function Nav({ onPalette }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => { const h = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
   const links = [["01","ABOUT","about"],["02","SKILLS","skills"],["03","PROJECTS","projects"],["04","XP","experience"],["05","CERTS","achievements"],["06","CONTACT","contact"]];
@@ -494,22 +689,30 @@ function Nav() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(8,10,14,0.95)" : "transparent", backdropFilter: scrolled ? "blur(24px)" : "none", borderBottom: scrolled ? "1px solid rgba(0,255,157,0.08)" : "none", transition: "all 0.4s", padding: "0 2rem" }}
+      style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(8,10,14,0.95)" : "transparent", backdropFilter: scrolled ? "blur(24px)" : "none", borderBottom: scrolled ? "1px solid rgba(var(--accent-rgb),0.08)" : "none", transition: "all 0.4s", padding: "0 2rem" }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-        <motion.div whileHover={{ scale: 1.08, textShadow: "0 0 30px #00ff9d" }} style={{ fontFamily: "'Orbitron'", fontWeight: 900, fontSize: "1.05rem", color: "#00ff9d", letterSpacing: "0.2em", animation: "glow 4s ease-in-out infinite", cursor: "pointer" }}>
-          SM<span style={{ color: "rgba(0,255,157,0.25)" }}>.EXE</span>
+        <motion.div whileHover={{ scale: 1.08 }} style={{ fontFamily: "'Orbitron'", fontWeight: 900, fontSize: "1.05rem", color: "var(--accent)", letterSpacing: "0.2em", animation: "glow 4s ease-in-out infinite", cursor: "pointer" }}>
+          SM<span style={{ color: "rgba(var(--accent-rgb),0.25)" }}>.EXE</span>
         </motion.div>
-        <div style={{ display: "flex", gap: "0.2rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.2rem" }}>
           {links.map(([num, label, id], i) => (
             <motion.button key={id}
               initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ color: "#00ff9d", y: -2, scale: 1.05 }}
+              whileHover={{ color: "var(--accent)", y: -2, scale: 1.05 }}
               onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })}
               style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'JetBrains Mono'", fontSize: "0.62rem", color: "#3a6a50", padding: "6px 12px", letterSpacing: "0.1em", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
               <span style={{ fontSize: "0.5rem", opacity: 0.45 }}>{num}</span>{label}
             </motion.button>
           ))}
+          {/* ⌘K trigger button */}
+          <motion.button
+            onClick={onPalette}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+            whileHover={{ scale: 1.05, borderColor: "rgba(var(--accent-rgb),0.5)" }}
+            style={{ background: "rgba(var(--accent-rgb),0.05)", border: "1px solid rgba(var(--accent-rgb),0.18)", borderRadius: 4, padding: "5px 11px", marginLeft: "0.5rem", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontFamily: "'JetBrains Mono'", fontSize: "0.58rem", color: "rgba(var(--accent-rgb),0.7)" }}>⌘K</span>
+          </motion.button>
         </div>
       </div>
     </motion.nav>
@@ -958,13 +1161,30 @@ function Footer() {
 
 /* ─── APP ───────────────────────────────────────────────────── */
 export default function App() {
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setPaletteOpen(o => !o);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <>
       <GlobalStyles />
+      <AccentColorShifter />
       <ScrollProgress />
       <MatrixRain />
+      <AnimatePresence>
+        {paletteOpen && <CommandPalette key="palette" onClose={() => setPaletteOpen(false)} />}
+      </AnimatePresence>
       <div style={{ position: "relative", zIndex: 1 }}>
-        <Nav />
+        <Nav onPalette={() => setPaletteOpen(true)} />
         <Hero />
         <Skills />
         <Projects />
